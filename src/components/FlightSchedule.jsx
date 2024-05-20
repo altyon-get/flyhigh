@@ -1,16 +1,26 @@
 // src/components/FlightSchedule.jsx
-import React, { useState } from 'react';
-import '../assets/style/FlightSchedule.css';
+import React, { useState } from "react";
+import "../assets/style/FlightSchedule.css";
 
 const FlightSchedule = () => {
-  const [planeId, setPlaneId] = useState('');
-  const [startId, setStartId] = useState('');
-  const [goalId, setGoalId] = useState('');
-  const [depTime, setDepTime] = useState('');
-  const [arrTime, setArrTime] = useState('');
+  const [planeId, setPlaneId] = useState("");
+  const [startId, setStartId] = useState("");
+  const [goalId, setGoalId] = useState("");
+  const [depTime, setDepTime] = useState("");
+  const [arrTime, setArrTime] = useState("");
   const [response, setResponse] = useState(null);
+  const [cords, setCords] = useState([]);
+
+
+
+  
 
   const handleSubmit = async (e) => {
+    if (startId === goalId) {
+      alert("Source and Destination cannot be the same.");
+      return;
+    }
+
     e.preventDefault();
 
     const flightData = {
@@ -22,10 +32,10 @@ const FlightSchedule = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:3000/api/flight', {
-        method: 'POST',
+      const res = await fetch("http://localhost:3000/api/flight", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(flightData),
       });
@@ -33,8 +43,8 @@ const FlightSchedule = () => {
       const data = await res.json();
       setResponse(data);
     } catch (error) {
-      console.error('Error:', error);
-      setResponse({ error: 'Failed to schedule flight' });
+      console.error("Error:", error);
+      setResponse({ error: "Failed to schedule flight" });
     }
   };
 
@@ -63,9 +73,11 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Source</option>
-            <option value="664a58191fe2efa499c776c4">Source 1</option>
-            <option value="664a58191fe2efa499c776c5">Source 2</option>
-            <option value="664a58191fe2efa499c776c6">Source 3</option>
+            {cords.map((cord) => (
+              <option key={cord._id} value={cord._id}>
+                {cord._id}
+              </option>
+            ))}
           </select>
         </div>
         <div className="form-group">
@@ -76,9 +88,11 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Destination</option>
-            <option value="664a58191fe2efa499c776cc">Destination 1</option>
-            <option value="664a58191fe2efa499c776cd">Destination 2</option>
-            <option value="664a58191fe2efa499c776ce">Destination 3</option>
+            {cords.map((cord) => (
+              <option key={cord._id} value={cord._id}>
+                {cord._id}
+              </option>
+            ))}
           </select>
         </div>
         <div className="form-group">
