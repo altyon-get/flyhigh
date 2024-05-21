@@ -161,3 +161,44 @@
 .ScheduleFlightForm button:hover {
   background-color: #0056b3;
 } */
+
+/* Control Panel Css */
+.control-panel {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-label {
+  margin-right: 10px;
+}
+
+.input-field {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.start-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.stop-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

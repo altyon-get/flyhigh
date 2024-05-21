@@ -4,6 +4,7 @@ import { fetchCords } from "../services/cordService";
 import { fetchPlanes } from "../services/FlightService";
 import GridCell from "./GridCell";
 import Plane from "./Plane";
+import ControlPanel from "./ControlPanel";
 
 const Grid = () => {
   const [cords, setCords] = useState([]);
@@ -57,18 +58,22 @@ const Grid = () => {
     const spacing = svgSize / gridSize;
 
     return (
-      <svg width={svgSize} height={svgSize} className="grid-svg">
-        {Array.from({ length: gridSize }).map((_, y) =>
-          Array.from({ length: gridSize }).map((_, x) => {
-            const cord = cords.find((c) => c.x === x && c.y === y) || {};
-            const fillColor = getColor(cord);
-            return <GridCell key={`${x}-${y}`} x={x} y={y} fillColor={fillColor} />;
-          })
-        )}
-        {planes && planes.map((plane) => (
-          <Plane key={plane._id} plane={plane} />
-        ))}
-      </svg>
+      <>
+        <svg width={svgSize} height={svgSize} className="grid-svg">
+          {Array.from({ length: gridSize }).map((_, y) =>
+            Array.from({ length: gridSize }).map((_, x) => {
+              const cord = cords.find((c) => c.x === x && c.y === y) || {};
+              const fillColor = getColor(cord);
+              return (
+                <GridCell key={`${x}-${y}`} x={x} y={y} fillColor={fillColor} />
+              );
+            })
+          )}
+          {planes &&
+            planes.map((plane) => <Plane key={plane._id} plane={plane} />)}
+        </svg>
+        <ControlPanel />
+      </>
     );
   };
 
