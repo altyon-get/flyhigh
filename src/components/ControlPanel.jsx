@@ -23,13 +23,13 @@ const ControlPanel = () => {
       </div>
       <div>
         <button
-          onClick={(flightName) => handleStartFlight(flightName)}
+          onClick={() => handleStartFlight(flightName)}
           className="start-button"
         >
           Start Flight
         </button>
         <button
-          onClick={(flightName) => handleStopFlight(flightName)}
+          onClick={() => handleStopFlight(flightName)}
           className="stop-button"
         >
           Stop Flight
