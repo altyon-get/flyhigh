@@ -7,7 +7,6 @@ import Plane from "./Plane";
 import ControlPanel from "./ControlPanel";
 import "../assets/style/Grid.css";
 
-
 const Grid = () => {
   const [cords, setCords] = useState([]);
   const [planes, setPlanes] = useState([]);
@@ -22,6 +21,8 @@ const Grid = () => {
       }
     };
     getCords();
+    const interval = setInterval(getCords, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
