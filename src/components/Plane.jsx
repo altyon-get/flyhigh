@@ -2,12 +2,14 @@
 import React from "react";
 
 const Plane = ({ plane }) => {
-  const spacing = 50; // Adjust as needed for spacing
+  const spacing = 40; // Adjust as needed for spacing
   const { reserveCord } = plane;
 
   const calculateAngle = (x1, y1, x2, y2) => {
     return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
   };
+
+  if(reserveCord.length === 0) return null;
 
   return (
     <g key={plane._id}>
@@ -36,9 +38,9 @@ const Plane = ({ plane }) => {
         transform={`rotate(${calculateAngle(
           reserveCord[0].x,
           reserveCord[0].y,
-          reserveCord[1].x,
-          reserveCord[1].y
-        )}, ${reserveCord[0].x * spacing + 10}, ${reserveCord[0].y * spacing + 10})`}
+          reserveCord[reserveCord.length >1 ? 1:0].x,
+          reserveCord[reserveCord.length >1 ? 1:0].y
+        ) + 40}, ${reserveCord[0].x * spacing + 10}, ${reserveCord[0].y * spacing + 10})`}
       >
         ✈️
       </text>

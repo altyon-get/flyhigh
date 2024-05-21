@@ -1,6 +1,9 @@
 // src/components/FlightSchedule.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/style/FlightSchedule.css";
+import { fetchPlaneNames } from '../services/planeService'; // Assuming the service is in planeService.js
+import { fetchAirportNames } from '../services/airportService'; // Assuming the service is in planeService.js
+
 
 const FlightSchedule = () => {
   const [planeId, setPlaneId] = useState("");
@@ -10,10 +13,35 @@ const FlightSchedule = () => {
   const [arrTime, setArrTime] = useState("");
   const [response, setResponse] = useState(null);
   const [cords, setCords] = useState([]);
+  const [planes, setPlanes] = useState([]);
+  const [airports, setAirports] = useState([]);
 
+  useEffect(() => {
+    const getPlanes = async () => {
+      try {
+        const planeNames = await fetchPlaneNames();
+        const names = planeNames.map((plane) => plane?.airPlaneName);
+        console.log(names,  ' - names ');
+        setPlanes(names);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
+    const getAirports = async () => {
+      try{
+        const airportNames = await fetchAirportNames();
+        const names = airportNames.map((airport) => airport?.airPortName);
+        setAirports(names);
+        console.log(airportNames);
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
 
-  
+    getPlanes();
+    getAirports();
+  }, []);
 
   const handleSubmit = async (e) => {
     if (startId === goalId) {
@@ -24,11 +52,11 @@ const FlightSchedule = () => {
     e.preventDefault();
 
     const flightData = {
-      planeId,
-      startId,
-      goalId,
-      depTime,
-      arrTime,
+      airPlaneName: planeId,
+      departureAirport: startId,
+      destinationAirport: goalId,
+      departureTime: depTime,
+      destinationTime: arrTime,
     };
 
     try {
@@ -60,9 +88,11 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Plane</option>
-            <option value="664b31ea383b6633b2801751">Plane 1</option>
-            <option value="2">Plane 2</option>
-            <option value="3">Plane 3</option>
+            {planes.map((plane) => (
+              <option key={plane} value={plane}>
+                {plane}
+              </option>
+            ))}
           </select>
         </div>
         <div className="form-group">
@@ -73,9 +103,9 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Source</option>
-            {cords.map((cord) => (
-              <option key={cord._id} value={cord._id}>
-                {cord._id}
+            {airports.map((airport) => (
+              <option key={airport} value={airport}>
+                {airport}
               </option>
             ))}
           </select>
@@ -88,9 +118,9 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Destination</option>
-            {cords.map((cord) => (
-              <option key={cord._id} value={cord._id}>
-                {cord._id}
+            {airports.map((airport) => (
+              <option key={airport} value={airport}>
+                {airport}
               </option>
             ))}
           </select>

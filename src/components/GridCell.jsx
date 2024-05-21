@@ -2,11 +2,11 @@
 import React from "react";
 
 const GridCell = ({ x, y, fillColor }) => {
-  const spacing = 50; // Adjust as needed for spacing
+  const spacing = 40; // Adjust as needed for spacing
 
   return (
     <g key={`${x}-${y}`}>
-      {x < 9 && (
+      {x < 19 && (
         <line
           x1={x * spacing + 10}
           y1={y * spacing + 10}
@@ -15,7 +15,7 @@ const GridCell = ({ x, y, fillColor }) => {
           stroke="black"
         />
       )}
-      {y < 9 && (
+      {y < 19 && (
         <line
           x1={x * spacing + 10}
           y1={y * spacing + 10}
@@ -27,7 +27,7 @@ const GridCell = ({ x, y, fillColor }) => {
       <circle
         cx={x * spacing + 10}
         cy={y * spacing + 10}
-        r={5}
+        r={4}
         fill={fillColor}
       />
       <text x={x * spacing + 18} y={y * spacing + 30} fontSize="10" fill="black">
