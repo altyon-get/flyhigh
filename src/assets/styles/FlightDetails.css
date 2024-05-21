@@ -1,0 +1,26 @@
+.flight-details {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(33.333% - 20px); /* Adjust based on how many you want per row */
+    box-sizing: border-box;
+  }
+  
+  .flight-details h2 {
+    margin-top: 0;
+  }
+  
+  .flight-details p {
+    margin: 10px 0;
+  }
+  
+  .flight-details ul {
+    padding-left: 20px;
+  }
+  
+  .flight-details ul li {
+    margin-bottom: 5px;
+  }
+  

@@ -1,8 +1,8 @@
 // src/components/FlightSchedule.jsx
-import React, { useEffect, useState } from "react";
-import "../assets/style/FlightSchedule.css";
+import { useEffect, useState } from "react";
 import { fetchPlaneNames } from '../services/planeService'; // Assuming the service is in planeService.js
 import { fetchAirportNames } from '../services/airportService'; // Assuming the service is in planeService.js
+import "../assets/styles/FlightSchedule.css";
 
 
 const FlightSchedule = () => {
@@ -12,7 +12,7 @@ const FlightSchedule = () => {
   const [depTime, setDepTime] = useState("");
   const [arrTime, setArrTime] = useState("");
   const [response, setResponse] = useState(null);
-  const [cords, setCords] = useState([]);
+  // const [cords, setCords] = useState([]);
   const [planes, setPlanes] = useState([]);
   const [airports, setAirports] = useState([]);
 
@@ -21,7 +21,7 @@ const FlightSchedule = () => {
       try {
         const planeNames = await fetchPlaneNames();
         const names = planeNames.map((plane) => plane?.airPlaneName);
-        console.log(names,  ' - names ');
+        // console.log(names,  ' - names ');
         setPlanes(names);
       } catch (error) {
         console.log(error.message);
@@ -32,8 +32,8 @@ const FlightSchedule = () => {
       try{
         const airportNames = await fetchAirportNames();
         const names = airportNames.map((airport) => airport?.airPortName);
+        // console.log(airportNames);
         setAirports(names);
-        console.log(airportNames);
       } catch (error) {
         console.log(error.message);
       }

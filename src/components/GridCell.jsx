@@ -1,5 +1,5 @@
 // src/components/GridCell.jsx
-import React from "react";
+import PropTypes from "prop-types";
 
 const GridCell = ({ x, y, fillColor }) => {
   const spacing = 40; // Adjust as needed for spacing
@@ -51,6 +51,12 @@ const GridCell = ({ x, y, fillColor }) => {
       )}
     </g>
   );
+};
+
+GridCell.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  fillColor: PropTypes.string.isRequired,
 };
 
 export default GridCell;

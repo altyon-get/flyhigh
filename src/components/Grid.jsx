@@ -1,12 +1,12 @@
 // src/components/Grid.jsx
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { fetchCords } from "../services/cordService";
 import { fetchPlanes } from "../services/FlightService";
 import GridCell from "./GridCell";
 import Plane from "./Plane";
-import ControlPanel from "./ControlPanel";
-import "../assets/style/Grid.css";
-
+// import ControlPanel from "./ControlPanel";
+import "../assets/styles/Grid.css";
+// import Navbar from "./Navbar";
 
 const Grid = () => {
   const [cords, setCords] = useState([]);
@@ -22,6 +22,9 @@ const Grid = () => {
       }
     };
     getCords();
+    const interval = setInterval(getCords, 2000); // Fetch every 2000 ms
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ const Grid = () => {
   }, []);
 
   const getColor = (cord) => {
-    if (cord.reserve) return "gray";
+    // if (cord.reserve) return "gray";
     switch (cord.weather) {
       case "good":
         return "green";
@@ -58,7 +61,7 @@ const Grid = () => {
   const renderGrid = () => {
     const gridSize = 20;
     const svgSize = 840;
-    const spacing = svgSize / gridSize;
+    // const spacing = svgSize / gridSize;
 
     return (
       <>
@@ -81,7 +84,6 @@ const Grid = () => {
             {planes &&
               planes.map((plane) => <Plane key={plane._id} plane={plane} />)}
           </svg>
-          <ControlPanel />
         </div>
       </>
     );
