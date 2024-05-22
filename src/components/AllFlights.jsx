@@ -1,38 +1,19 @@
-// src/components/AllFlights.jsx
-import React, { useEffect, useState } from "react";
-// import { fetchPlanes } from "../services/FlightService";
-import FlightDetails from "./FlightDetails";
-import "../assets/styles/AllFlights.css";
-import socket from "../services/socket";
+import React, { useState, useEffect } from 'react';
+import { useSocket } from '../context/SocketContext';
+import FlightDetails from './FlightDetails';
+import '../assets/styles/AllFlights.css';
+
 const AllFlights = () => {
-  const [flights, setFlights] = useState([]);
+  const { flights } = useSocket();
   const [filteredFlights, setFilteredFlights] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("plane");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchType, setSearchType] = useState('plane');
   const [currentPage, setCurrentPage] = useState(1);
   const flightsPerPage = 10;
 
   useEffect(() => {
-    socket.connect();
-    const getFlights = async () => {
-      console.log("Flight...........");
-      try {
-        console.log("Fetching flights...");
-        await socket.on("getFlight", (data) => {
-          console.log(data);
-          setFlights(data);
-          setFilteredFlights(data);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getFlights();
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+    setFilteredFlights(flights);
+  }, [flights]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -51,13 +32,13 @@ const AllFlights = () => {
     }
 
     const filtered = flights.filter((flight) => {
-      if (searchType === "plane") {
+      if (searchType === 'plane') {
         return flight.airPlaneName.toLowerCase().includes(term.toLowerCase());
-      } else if (searchType === "source") {
+      } else if (searchType === 'source') {
         return flight.departureAirport
           .toLowerCase()
           .includes(term.toLowerCase());
-      } else if (searchType === "destination") {
+      } else if (searchType === 'destination') {
         return flight.destinationAirport
           .toLowerCase()
           .includes(term.toLowerCase());
@@ -75,8 +56,6 @@ const AllFlights = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  //   if (!flights.length) return <div>No Flight Found</div>;
 
   return (
     <div className="all-flights-container">

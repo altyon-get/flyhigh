@@ -7,6 +7,7 @@ const FlightDetails = ({ flight }) => {
   return (
     <div className="flight-details">
       <h2>Flight {flight.airPlaneName}</h2>
+      <h4>Flight {flight.flightId}</h4>
       <p>
         <strong>Departure Airport:</strong> {flight.departureAirport}
       </p>
