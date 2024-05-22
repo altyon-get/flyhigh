@@ -1,54 +1,60 @@
 // src/components/Grid.jsx
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchPlanes } from "../services/FlightService";
 import GridCell from "./GridCell";
 import Plane from "./Plane";
-import io from "socket.io-client";
+import socket from "../services/socket";
 import "../assets/styles/Grid.css";
 
 const Grid = () => {
   const [cords, setCords] = useState([]);
   const [planes, setPlanes] = useState([]);
-
   useEffect(() => {
-    const socket = io('http://localhost:3000');
-
-    socket.on('initData', ({cords,flights}) => {
-      console.log(cords,flights ,' -data');
-      setCords(cords);
-    });
-
-    socket.on('weatherUpdate', (updatedCords) => {
-      setCords((prevCords) => {
-        const cordsMap = new Map(prevCords.map(c => [`${c.x},${c.y}`, c]));
-        updatedCords.forEach(c => cordsMap.set(`${c.x},${c.y}`, c));
-        const newCords = Array.from(cordsMap.values());
-        console.log("Data updated:", newCords);
-        return newCords;
-      });
-    });
-
+    socket.connect();
     return () => {
       socket.disconnect();
     };
   }, []);
 
-  // useEffect(() => {
-  //   const getPlanes = async () => {
-  //     try {
-  //       const data = await fetchPlanes();
-  //       setPlanes(data);
-  //       console.log(data[0]?.reserveCord?.length, " -data");
-  //     } catch (error) {
-  //       console.error("Error fetching planes:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    socket.on("initData", ({ cords, flights }) => {
+      // console.log(cords, flights, " -data");
+      setCords(cords);
+    });
 
-  //   // getPlanes(); // Initial fetch
-  //   // const interval = setInterval(getPlanes, 2000); // Fetch every 2000 ms
+    socket.on("weatherUpdate", (updatedCords) => {
+      setCords((prevCords) => {
+        const cordsMap = new Map(prevCords.map((c) => [`${c.x},${c.y}`, c]));
+        updatedCords.forEach((c) => cordsMap.set(`${c.x},${c.y}`, c));
+        const newCords = Array.from(cordsMap.values());
+        // console.log("Data updated:", newCords);
+        return newCords;
+      });
+    });
 
-  //   // return () => clearInterval(interval); // Cleanup interval on component unmount
-  // }, []);
+    // return () => {
+    //   socket.disconnect();
+    // };
+  }, []);
+
+  useEffect(() => {
+    const getPlanes = async () => {
+      try {
+        console.log("Fetching flights...");
+        await socket.on("getFlight", (data) => {
+          console.log(data);
+          setPlanes(data);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getPlanes(); // Initial fetch
+    // const interval = setInterval(getPlanes, 2000); // Fetch every 2000 ms
+
+    // return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   const getColor = (cord) => {
     // if (cord.reserve) return "gray";

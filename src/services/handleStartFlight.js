@@ -1,9 +1,7 @@
-import axios from 'axios';
-
+import socket from "../services/socket"
 const handleStartFlight = async (flightName) => {
     try {
-        const response = await axios.post('http://localhost:3000/api/startFlight', { "flightId": flightName });
-        console.log(response);
+        socket.emit('startFlight', flightName);
     } catch (error) {
         console.error("Error starting flight:", error);
         alert("Failed to start flight");

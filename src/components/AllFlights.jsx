@@ -1,9 +1,9 @@
 // src/components/AllFlights.jsx
 import React, { useEffect, useState } from "react";
-import { fetchPlanes } from "../services/FlightService";
+// import { fetchPlanes } from "../services/FlightService";
 import FlightDetails from "./FlightDetails";
 import "../assets/styles/AllFlights.css";
-
+import socket from "../services/socket";
 const AllFlights = () => {
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
@@ -13,17 +13,25 @@ const AllFlights = () => {
   const flightsPerPage = 10;
 
   useEffect(() => {
-    console.log("Fetching flights...");
+    socket.connect();
     const getFlights = async () => {
+      console.log("Flight...........");
       try {
-        const data = await fetchPlanes();
-        setFlights(data);
-        setFilteredFlights(data);
+        console.log("Fetching flights...");
+        await socket.on("getFlight", (data) => {
+          console.log(data);
+          setFlights(data);
+          setFilteredFlights(data);
+        });
       } catch (error) {
-        console.error("Error fetching flights:", error);
+        console.log(error);
       }
     };
-    // getFlights();
+
+    getFlights();
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const handleSearch = (event) => {
@@ -68,7 +76,7 @@ const AllFlights = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-//   if (!flights.length) return <div>No Flight Found</div>;
+  //   if (!flights.length) return <div>No Flight Found</div>;
 
   return (
     <div className="all-flights-container">
