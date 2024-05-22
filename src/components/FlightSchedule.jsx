@@ -1,10 +1,9 @@
 // src/components/FlightSchedule.jsx
 import { useEffect, useState } from "react";
-import { fetchPlaneNames } from '../services/planeService'; // Assuming the service is in planeService.js
-import { fetchAirportNames } from '../services/airportService'; // Assuming the service is in planeService.js
+import { fetchPlaneNames } from "../services/planeService"; // Assuming the service is in planeService.js
+import { fetchAirportNames } from "../services/airportService"; // Assuming the service is in planeService.js
 import "../assets/styles/FlightSchedule.css";
-import io from "socket.io-client";
-
+import socket from "../services/socket";
 
 const FlightSchedule = () => {
   const [planeId, setPlaneId] = useState("");
@@ -16,36 +15,44 @@ const FlightSchedule = () => {
   // const [cords, setCords] = useState([]);
   const [planes, setPlanes] = useState([]);
   const [airports, setAirports] = useState([]);
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   const getPlanes = async () => {
-  //     try {
-  //       const planeNames = await fetchPlaneNames();
-  //       const names = planeNames.map((plane) => plane?.airPlaneName);
-  //       // console.log(names,  ' - names ');
-  //       setPlanes(names);
-  //     } catch (error) {
-  //       console.log(error.message);
-  //     }
-  //   };
+  useEffect(() => {
+    const getPlanes = async () => {
+      try {
+        await socket.on("getAirPlane", (planeNames) => {
+          const names = planeNames.map((plane) => plane?.airPlaneName);
+          // console.log(names,  ' - names ');
+          setPlanes(names);
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
-  //   const getAirports = async () => {
-  //     try{
-  //       const airportNames = await fetchAirportNames();
-  //       const names = airportNames.map((airport) => airport?.airPortName);
-  //       // console.log(airportNames);
-  //       setAirports(names);
-  //     } catch (error) {
-  //       console.log(error.message);
-  //     }
-  //   }
+    const getAirports = async () => {
+      try {
+        await socket.on("getAirports", (airportNames) => {
+          const names = airportNames.map((airport) => airport?.airPortName);
+          // console.log(airportNames);
+          setAirports(names);
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
-  //   // getPlanes();
-  //   // getAirports();
-  // }, []);
+    getPlanes();
+    getAirports();
+  }, []);
 
   const handleSubmit = async (e) => {
-    console.log('Creating flight...');
+    console.log("Creating flight...");
     if (startId === goalId) {
       // alert("Source and Destination cannot be the same.");
       // return;
@@ -54,21 +61,17 @@ const FlightSchedule = () => {
     e.preventDefault();
 
     const flightData = {
-      airPlaneName: 'Plane23',
-      departureAirport: 'AZ234',
-      destinationAirport: 'AZ123',
-      departureTime: '2021-09-01T12:00:00',
-      destinationTime: '2021-09-01T14:00:00',
+      airPlaneName: "Plane23",
+      departureAirport: "AZ234",
+      destinationAirport: "AZ123",
+      departureTime: "2021-09-01T12:00:00",
+      destinationTime: "2021-09-01T14:00:00",
     };
 
-    const socket = io('http://localhost:3000');
-
-    socket.emit('createFlight', flightData); // Emit flight data to the server
-
-    socket.on('flightCreated', (data) => { // Listen for the flightCreated event
-      console.log(data, ' flightdata');
-      // setResponse(data); // Update state with the newly created flight data
-      socket.disconnect(); // Disconnect the socket after receiving the response
+    socket.emit("createFlight", flightData); // Emit flight data to the server
+    console.log("Flight data emitted to server");
+    socket.on("flightCreated", (data) => {
+      console.log(data, " flightdata");
     });
   };
 
