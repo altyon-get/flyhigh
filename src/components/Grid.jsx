@@ -11,10 +11,17 @@ const Grid = () => {
   // const [cords, setCords] = useState([]);
   // const [planes, setPlanes] = useState([]);
 
-  const { cords, flights } = useSocket();
+  const { cords, flights, airports } = useSocket();
+
+  // const obj = [];
+  // airports.map((airport) => {
+  //   obj.push({ x: airport.x, y: airport.y, airport: airport.airPortName });
+  // } )
+
+  // console.log(obj);
   const totalPlanes = 10; // Total number of planes to be displayed
   // Calculate remaining planes
-  const remainingPlanes = totalPlanes - flights.length + 3;
+  const remainingPlanes = totalPlanes - flights.length ;
 
   // useEffect(() => {
   //   socket.connect();
@@ -64,7 +71,7 @@ const Grid = () => {
   // }, []);
 
   const getColor = (cord) => {
-    // if (cord.reserve) return "gray";
+    if (cord.reserve) return "gray";
     switch (cord.weather) {
       case "good":
         return "green";
@@ -98,6 +105,7 @@ const Grid = () => {
                     x={x}
                     y={y}
                     fillColor={fillColor}
+                    isAirport={airports.some((o) => o.x === x && o.y === y)}
                   />
                 );
               })

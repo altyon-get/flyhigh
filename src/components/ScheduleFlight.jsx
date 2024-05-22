@@ -26,7 +26,7 @@ const FlightSchedule = () => {
       destinationTime: arrTime,
     };
 
-    console.log(flightData, '-XXX');
+    // console.log(flightData, '-XXX');
     
     createFlight(flightData);
   };
@@ -58,9 +58,9 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Source</option>
-            {airports.map((airport) => (
-              <option key={airport} value={airport}>
-                {airport}
+            {airports.map(({airPortName}) => (
+              <option key={airPortName} value={airPortName}>
+                {airPortName}
               </option>
             ))}
           </select>
@@ -73,9 +73,9 @@ const FlightSchedule = () => {
             required
           >
             <option value="">Select Destination</option>
-            {airports.map((airport) => (
-              <option key={airport} value={airport}>
-                {airport}
+            {airports.map(({airPortName}) => (
+              <option key={airPortName} value={airPortName}>
+                {airPortName}
               </option>
             ))}
           </select>

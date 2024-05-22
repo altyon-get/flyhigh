@@ -1,10 +1,9 @@
-import axios from 'axios';
+import socket from "../services/socket";
 
-
-const handleStopFlight = async (flightName) => {
+const handleStopFlight = async (flightId) => {
     try {
-        const response = await axios.post('http://localhost:3000/api/stopFlight', { "flightId": flightName });
-        console.log(response);
+        socket.emit('stopFlight', flightId);
+        console.log('flight stopped');
     } catch (error) {
         console.error("Error stopping flight:", error);
         alert("Failed to stop flight");

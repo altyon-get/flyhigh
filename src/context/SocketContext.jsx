@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import socket from '../services/socket'; // Adjust the path if necessary
+import React, { createContext, useContext, useState, useEffect } from "react";
+import socket from "../services/socket"; // Adjust the path if necessary
 
 const SocketContext = createContext();
 
@@ -17,38 +17,42 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     socket.connect();
 
-    socket.on('initData', ({ cords, flights }) => {
+    socket.on("initData", ({ cords, flights }) => {
       setCords(cords);
       setFlights(flights);
+      console.log(cords, flights, " first socket");
     });
 
-    socket.on('weatherUpdate', (updatedCords) => {
+    socket.on("weatherUpdate", (updatedCords) => {
       setCords((prevCords) => {
         const cordsMap = new Map(prevCords.map((c) => [`${c.x},${c.y}`, c]));
         updatedCords.forEach((c) => cordsMap.set(`${c.x},${c.y}`, c));
         return Array.from(cordsMap.values());
       });
+      console.log("second socket data");
     });
 
-    socket.on('getFlight', (data) => {
+    socket.on("getFlight", (data) => {
       setFlights(data);
-      console.log(data, '-XXX');
       const planeIdsArray = data.map((flight) => flight?.flightId);
-      console.log(planeIdsArray, '-XXX');
+      // console.log(planeIdsArray, '-XXX');
       setPlaneIds(planeIdsArray);
+      console.log(data, " third socket data");
     });
 
-    socket.on('getAirPlane', (planeNames) => {
+    socket.on("getAirPlane", (planeNames) => {
       const names = planeNames.map((plane) => plane?.airPlaneName);
       setPlanes(names);
+      console.log(" fourth socket data");
     });
 
-    socket.on('getAirports', (airportNames) => {
+    socket.on("getAirports", (airportNames) => {
+      // console.log(airportNames, " airport names");
       const names = airportNames.map((airport) => airport?.airPortName);
-      setAirports(names);
+      setAirports(airportNames);
     });
 
-    socket.on('flightCreated', (data) => {
+    socket.on("flightCreated", (data) => {
       setScheduledFlights((prev) => [...prev, data.planeId]);
       setResponse(data);
     });
@@ -59,11 +63,22 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   const createFlight = (flightData) => {
-    socket.emit('createFlight', flightData);
+    socket.emit("createFlight", flightData);
   };
 
   return (
-    <SocketContext.Provider value={{ cords, flights, planes, airports, scheduledFlights, response, createFlight,planeIds }}>
+    <SocketContext.Provider
+      value={{
+        cords,
+        flights,
+        planes,
+        airports,
+        scheduledFlights,
+        response,
+        createFlight,
+        planeIds,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );
