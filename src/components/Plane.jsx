@@ -1,5 +1,6 @@
 // src/components/Plane.jsx
 import PropTypes from "prop-types";
+import io from "socket.io-client";
 
 const Plane = ({ plane }) => {
   const spacing = 40; // Adjust as needed for spacing

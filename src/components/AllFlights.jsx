@@ -23,7 +23,7 @@ const AllFlights = () => {
         console.error("Error fetching flights:", error);
       }
     };
-    getFlights();
+    // getFlights();
   }, []);
 
   const handleSearch = (event) => {

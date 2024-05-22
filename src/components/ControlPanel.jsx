@@ -24,7 +24,7 @@ const ControlPanel = () => {
       }
     };
 
-    getPlanes();
+    // getPlanes();
   }, []);
 
   return (
