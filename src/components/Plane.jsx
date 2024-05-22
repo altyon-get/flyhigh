@@ -1,5 +1,6 @@
 // src/components/Plane.jsx
-import React from "react";
+import PropTypes from "prop-types";
+import io from "socket.io-client";
 
 const Plane = ({ plane }) => {
   const spacing = 40; // Adjust as needed for spacing
@@ -47,5 +48,18 @@ const Plane = ({ plane }) => {
     </g>
   );
 };
+
+Plane.propTypes = {
+  plane: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    reserveCord: PropTypes.arrayOf(
+      PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
+};
+
 
 export default Plane;

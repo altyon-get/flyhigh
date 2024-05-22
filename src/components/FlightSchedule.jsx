@@ -1,8 +1,9 @@
 // src/components/FlightSchedule.jsx
-import React, { useEffect, useState } from "react";
-import "../assets/style/FlightSchedule.css";
+import { useEffect, useState } from "react";
 import { fetchPlaneNames } from '../services/planeService'; // Assuming the service is in planeService.js
 import { fetchAirportNames } from '../services/airportService'; // Assuming the service is in planeService.js
+import "../assets/styles/FlightSchedule.css";
+import io from "socket.io-client";
 
 
 const FlightSchedule = () => {
@@ -12,68 +13,63 @@ const FlightSchedule = () => {
   const [depTime, setDepTime] = useState("");
   const [arrTime, setArrTime] = useState("");
   const [response, setResponse] = useState(null);
-  const [cords, setCords] = useState([]);
+  // const [cords, setCords] = useState([]);
   const [planes, setPlanes] = useState([]);
   const [airports, setAirports] = useState([]);
 
-  useEffect(() => {
-    const getPlanes = async () => {
-      try {
-        const planeNames = await fetchPlaneNames();
-        const names = planeNames.map((plane) => plane?.airPlaneName);
-        console.log(names,  ' - names ');
-        setPlanes(names);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
+  // useEffect(() => {
+  //   const getPlanes = async () => {
+  //     try {
+  //       const planeNames = await fetchPlaneNames();
+  //       const names = planeNames.map((plane) => plane?.airPlaneName);
+  //       // console.log(names,  ' - names ');
+  //       setPlanes(names);
+  //     } catch (error) {
+  //       console.log(error.message);
+  //     }
+  //   };
 
-    const getAirports = async () => {
-      try{
-        const airportNames = await fetchAirportNames();
-        const names = airportNames.map((airport) => airport?.airPortName);
-        setAirports(names);
-        console.log(airportNames);
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
+  //   const getAirports = async () => {
+  //     try{
+  //       const airportNames = await fetchAirportNames();
+  //       const names = airportNames.map((airport) => airport?.airPortName);
+  //       // console.log(airportNames);
+  //       setAirports(names);
+  //     } catch (error) {
+  //       console.log(error.message);
+  //     }
+  //   }
 
-    getPlanes();
-    getAirports();
-  }, []);
+  //   // getPlanes();
+  //   // getAirports();
+  // }, []);
 
   const handleSubmit = async (e) => {
+    console.log('Creating flight...');
     if (startId === goalId) {
-      alert("Source and Destination cannot be the same.");
-      return;
+      // alert("Source and Destination cannot be the same.");
+      // return;
     }
 
     e.preventDefault();
 
     const flightData = {
-      airPlaneName: planeId,
-      departureAirport: startId,
-      destinationAirport: goalId,
-      departureTime: depTime,
-      destinationTime: arrTime,
+      airPlaneName: 'Plane23',
+      departureAirport: 'AZ234',
+      destinationAirport: 'AZ123',
+      departureTime: '2021-09-01T12:00:00',
+      destinationTime: '2021-09-01T14:00:00',
     };
 
-    try {
-      const res = await fetch("http://localhost:3000/api/flight", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(flightData),
-      });
+    const socket = io('http://localhost:3000');
 
-      const data = await res.json();
-      setResponse(data);
-    } catch (error) {
-      console.error("Error:", error);
-      setResponse({ error: "Failed to schedule flight" });
-    }
+    socket.emit('createFlight', flightData); // Emit flight data to the server
+
+    socket.on('flightCreated', (data) => { // Listen for the flightCreated event
+      console.log(data, ' flightdata');
+      // setResponse(data); // Update state with the newly created flight data
+      socket.disconnect(); // Disconnect the socket after receiving the response
+    });
   };
 
   return (
@@ -85,7 +81,7 @@ const FlightSchedule = () => {
           <select
             value={planeId}
             onChange={(e) => setPlaneId(e.target.value)}
-            required
+            // required
           >
             <option value="">Select Plane</option>
             {planes.map((plane) => (
@@ -100,7 +96,7 @@ const FlightSchedule = () => {
           <select
             value={startId}
             onChange={(e) => setStartId(e.target.value)}
-            required
+            // required
           >
             <option value="">Select Source</option>
             {airports.map((airport) => (
@@ -115,7 +111,7 @@ const FlightSchedule = () => {
           <select
             value={goalId}
             onChange={(e) => setGoalId(e.target.value)}
-            required
+            // required
           >
             <option value="">Select Destination</option>
             {airports.map((airport) => (
@@ -131,7 +127,7 @@ const FlightSchedule = () => {
             type="datetime-local"
             value={depTime}
             onChange={(e) => setDepTime(e.target.value)}
-            required
+            // required
           />
         </div>
         <div className="form-group">
@@ -140,7 +136,7 @@ const FlightSchedule = () => {
             type="datetime-local"
             value={arrTime}
             onChange={(e) => setArrTime(e.target.value)}
-            required
+            // required
           />
         </div>
         <button type="submit">Schedule Flight</button>

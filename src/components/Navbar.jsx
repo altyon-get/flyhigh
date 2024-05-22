@@ -1,28 +1,24 @@
-/* eslint-disable no-unused-vars */
-// src/components/Navbar.jsx
-import React from "react";
-import { Link } from "react-router-dom";
-// import './Navbar.css';
+import PropTypes from "prop-types";
 
-const Navbar = () => {
+const Navbar = ({ setActiveComponent }) => {
   return (
-    <nav className="navbar">
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/page1">Page 1</Link>
-        </li>
-        <li>
-          <Link to="/page2">Page 2</Link>
-        </li>
-        <li>
-          <Link to="/schedule-flight">Schedule Flight</Link>
-        </li>
-      </ul>
-    </nav>
+    <div className="navbar">
+      <button onClick={() => setActiveComponent("allFlight")}>
+        All Flights 
+      </button>
+
+      <button onClick={() => setActiveComponent("controlPanel")}>
+        Control Panel
+      </button>
+      <button onClick={() => setActiveComponent("flightSchedule")}>
+        Flight Schedule
+      </button>
+    </div>
   );
+};
+
+Navbar.propTypes = {
+  setActiveComponent: PropTypes.func.isRequired,
 };
 
 export default Navbar;
