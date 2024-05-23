@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
-import FlightDetails from './FlightDetails';
 import '../assets/styles/AllFlights.css';
 
 const AllFlights = () => {
@@ -35,13 +34,9 @@ const AllFlights = () => {
       if (searchType === 'plane') {
         return flight.airPlaneName.toLowerCase().includes(term.toLowerCase());
       } else if (searchType === 'source') {
-        return flight.departureAirport
-          .toLowerCase()
-          .includes(term.toLowerCase());
+        return flight.departureAirport.toLowerCase().includes(term.toLowerCase());
       } else if (searchType === 'destination') {
-        return flight.destinationAirport
-          .toLowerCase()
-          .includes(term.toLowerCase());
+        return flight.destinationAirport.toLowerCase().includes(term.toLowerCase());
       }
       return false;
     });
@@ -50,12 +45,13 @@ const AllFlights = () => {
 
   const indexOfLastFlight = currentPage * flightsPerPage;
   const indexOfFirstFlight = indexOfLastFlight - flightsPerPage;
-  const currentFlights = filteredFlights.slice(
-    indexOfFirstFlight,
-    indexOfLastFlight
-  );
+  const currentFlights = filteredFlights.slice(indexOfFirstFlight, indexOfLastFlight);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleRowClick = (flight) => {
+    console.log(flight);
+  };
 
   return (
     <div className="all-flights-container">
@@ -73,25 +69,38 @@ const AllFlights = () => {
           onChange={handleSearch}
         />
       </div>
-      <div className="flight-list">
-        {currentFlights.length > 0 ? (
-          currentFlights.map((flight) => (
-            <FlightDetails key={flight._id} flight={flight} />
-          ))
-        ) : (
-          <p>No flights found</p>
-        )}
-      </div>
-
+      <table className="flight-table">
+        <thead>
+          <tr>
+            <th>F.No</th>
+            <th>F.Name</th>
+            <th>F.Source</th>
+            <th>F.Dest</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentFlights.length > 0 ? (
+            currentFlights.map((flight, index) => (
+              <tr key={flight._id} onClick={() => handleRowClick(flight)}>
+                <td>{index + 1}</td>
+                <td>{flight.airPlaneName}</td>
+                <td>{flight.departureAirport}</td>
+                <td>{flight.destinationAirport}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4">No flights found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
       <div className="pagination">
-        {Array.from(
-          { length: Math.ceil(filteredFlights.length / flightsPerPage) },
-          (_, i) => (
-            <button key={i} onClick={() => paginate(i + 1)}>
-              {i + 1}
-            </button>
-          )
-        )}
+        {Array.from({ length: Math.ceil(filteredFlights.length / flightsPerPage) }, (_, i) => (
+          <button key={i} onClick={() => paginate(i + 1)}>
+            {i + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

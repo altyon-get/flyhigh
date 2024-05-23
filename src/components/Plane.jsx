@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import io from "socket.io-client";
 
-const Plane = ({ plane }) => {
+const Plane = ({ plane, index }) => {
   const spacing = 40; // Adjust as needed for spacing
   const { reserveCord } = plane;
 
@@ -10,7 +10,7 @@ const Plane = ({ plane }) => {
     return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
   };
 
-  if(reserveCord.length === 0) return null;
+  if (reserveCord.length === 0) return null;
 
   return (
     <g key={plane._id}>
@@ -35,15 +35,20 @@ const Plane = ({ plane }) => {
         x={reserveCord[0].x * spacing + 10}
         y={reserveCord[0].y * spacing + 10}
         fontSize="20"
-        fill="blue"
-        transform={`rotate(${calculateAngle(
-          reserveCord[0].x,
-          reserveCord[0].y,
-          reserveCord[reserveCord.length >1 ? 1:0].x,
-          reserveCord[reserveCord.length >1 ? 1:0].y
-        ) + 40}, ${reserveCord[0].x * spacing + 10}, ${reserveCord[0].y * spacing + 10})`}
+        // fill="blue"
+        transform={`rotate(${
+          calculateAngle(
+            reserveCord[0].x,
+            reserveCord[0].y,
+            reserveCord[reserveCord.length > 1 ? 1 : 0].x,
+            reserveCord[reserveCord.length > 1 ? 1 : 0].y
+          ) + 40
+        }, ${reserveCord[0].x * spacing + 10}, ${
+          reserveCord[0].y * spacing + 10
+        })`}
       >
         ✈️
+        {10-index}
       </text>
     </g>
   );
@@ -60,6 +65,5 @@ Plane.propTypes = {
     ).isRequired,
   }).isRequired,
 };
-
 
 export default Plane;

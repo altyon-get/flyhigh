@@ -10,30 +10,29 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }) => {
   const [cords, setCords] = useState([]);
   const [flights, setFlights] = useState([]);
+  const [flightLogs, setFlightLogs] = useState([]);
   const [planes, setPlanes] = useState([]);
   const [airports, setAirports] = useState([]);
   const [scheduledFlights, setScheduledFlights] = useState([]);
   const [planeIds, setPlaneIds] = useState([]);
-  const [response, setResponse] = useState(null);
+  const [selectedAirports, setSelectedAirports] = useState({
+    start: null,
+    goal: null,
+  });
+  const [selectedPlane, setSelectedPlane] = useState(null);
 
   useEffect(() => {
     socket.connect();
-    socket.on("message", (data) => {
-      toast.success(data);
-      console.log(data);
+
+    socket.on("flightLog", (data) => {
+      console.log(data, "flight log");
+      setFlightLogs((prevLogs) => [...prevLogs, data]);
     });
-    socket.on("error", (data) => {
-      toast.error(data);
-      console.log(data);
-    });
-    socket.on("warn", (data) => {
-      toast.warn(data);
-      console.log(data);
-    });
+
     socket.on("initData", ({ cords, flights }) => {
       setCords(cords);
       setFlights(flights);
-      console.log(cords, flights, " first socket");
+      toast.success("All data loaded successfully");
     });
 
     socket.on("weatherUpdate", (updatedCords) => {
@@ -42,32 +41,30 @@ export const SocketProvider = ({ children }) => {
         updatedCords.forEach((c) => cordsMap.set(`${c.x},${c.y}`, c));
         return Array.from(cordsMap.values());
       });
-      console.log("second socket data");
+
+      console.log("second socket data succesful");
     });
 
     socket.on("getFlight", (data) => {
       setFlights(data);
       const planeIdsArray = data.map((flight) => flight?.flightId);
-      // console.log(planeIdsArray, '-XXX');
       setPlaneIds(planeIdsArray);
-      console.log(data, " third socket data");
+      console.log("third socket data succesful");
     });
 
     socket.on("getAirPlane", (planeNames) => {
       const names = planeNames.map((plane) => plane?.airPlaneName);
       setPlanes(names);
-      console.log(" fourth socket data");
+      console.log("fourth socket data succesful");
     });
 
     socket.on("getAirports", (airportNames) => {
-      // console.log(airportNames, " airport names");
-      const names = airportNames.map((airport) => airport?.airPortName);
       setAirports(airportNames);
+      console.log("fifth socket data succesful");
     });
 
     socket.on("flightCreated", (data) => {
       setScheduledFlights((prev) => [...prev, data.planeId]);
-      setResponse(data);
     });
 
     return () => {
@@ -87,9 +84,13 @@ export const SocketProvider = ({ children }) => {
         planes,
         airports,
         scheduledFlights,
-        response,
         createFlight,
         planeIds,
+        selectedAirports,
+        setSelectedAirports,
+        selectedPlane,
+        setSelectedPlane,
+        flightLogs
       }}
     >
       {children}
