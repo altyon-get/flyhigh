@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import socket from "../services/socket"; // Adjust the path if necessary
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SocketContext = createContext();
 
@@ -16,7 +18,18 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     socket.connect();
-
+    socket.on("message", (data) => {
+      toast.success(data);
+      console.log(data);
+    });
+    socket.on("error", (data) => {
+      toast.error(data);
+      console.log(data);
+    });
+    socket.on("warn", (data) => {
+      toast.warn(data);
+      console.log(data);
+    });
     socket.on("initData", ({ cords, flights }) => {
       setCords(cords);
       setFlights(flights);
@@ -80,6 +93,7 @@ export const SocketProvider = ({ children }) => {
       }}
     >
       {children}
+      <ToastContainer />
     </SocketContext.Provider>
   );
 };
