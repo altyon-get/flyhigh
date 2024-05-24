@@ -5,9 +5,10 @@ import handleStopFlight from "../services/handleStopFlight";
 import "../assets/styles/ControlPanel.css";
 
 const ControlPanel = () => {
+  const { response, planeIds, flights, flightLogs , setSelectedFlight,selectedFlight} = useSocket();
+
   const [flightName, setFlightName] = useState("");
-  const [selectedFlight, setSelectedFlight] = useState(null);
-  const { response, planeIds, flights, flightLogs } = useSocket();
+  // const [selectedFlight, setSelectedFlight] = useState(null);
   const [isFlightRunning, setIsFlightRunning] = useState(false);
   const logsEndRef = useRef(null);
   const intervalRef = useRef(null);
@@ -44,6 +45,7 @@ const ControlPanel = () => {
   }, [flightLogs]);
 
   useEffect(() => {
+    setSelectedFlight(null);
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
