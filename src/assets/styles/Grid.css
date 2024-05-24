@@ -1,18 +1,41 @@
 .grid-container {
   position: relative;
-  /* padding: 20px;/ */
-  /* border-radius: 8px; */
-  /* box-shadow: 0 4px 8px rgba(240, 21, 21, 0.1); */
-  /* background-color: #f0f0f0; */
+  display: flex;
+  flex-direction: column;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* gap: 20px; */
   padding: 5px;
   margin: 10px;
   position: relative;
+  overflow: auto;
+  width: 800px;
+  height: 800px;
+  align-self: center;
+}
+
+.grid::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.grid::-webkit-scrollbar-track {
+  background: none;
+}
+
+.grid::-webkit-scrollbar-thumb {
+  background: #a3a0a0;
+  border-radius: 6px;
+}
+
+.grid::-webkit-scrollbar-thumb:horizontal {
+  height: 0;
+}
+
+.grid::-webkit-scrollbar-thumb:vertical {
+  width: 0;
 }
 
 .grid::before {
@@ -30,25 +53,8 @@
 .grid-svg {
   position: relative;
   z-index: 1;
-}
-
-.grid {
-  /* display: inline-block; */
-  display: flex;
-}
-
-.grid-svg {
   background-color: #f0f0f0;
 }
-
-.grid-svg line {
-  /* stroke: #ccc; */
-}
-
-/* .grid-svg rect {
-  fill: skyblue;
-  stroke: #999;
-} */
 
 .grid-svg circle {
   fill: #999;
@@ -56,14 +62,16 @@
 
 .tracker {
   display: flex;
+  justify-content: center;
   font-size: large;
-  /* position: absolute; */
-  bottom: 20px;   left: 20px; 
   padding: 10px;
-  background-color: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #4CAF50;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  font-size: 20px;
 }
 
 .remaining-planes {
@@ -90,4 +98,20 @@
   0% { opacity: 1; }
   50% { opacity: 0.5; }
   100% { opacity: 1; }
+}
+
+.grid-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.zoom-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.zoom-controls button {
+  padding: 5px 10px;
+  font-size: 14px;
 }

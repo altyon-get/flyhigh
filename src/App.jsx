@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   return (
     <>
-      <header>Flight Navigation System</header>
+      {/* <header>Flight Navigation System</header> */}
       <div className="main-container">
         <div className="grid-container">
           <Grid />

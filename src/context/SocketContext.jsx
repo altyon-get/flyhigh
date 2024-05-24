@@ -30,10 +30,15 @@ export const SocketProvider = ({ children }) => {
       setFlightLogs((prevLogs) => [...prevLogs, data]);
     });
 
+    socket.on("stopFlight", (data) => {
+      // console.log(data, "flight log");
+      setFlightLogs((prevLogs) => [...prevLogs, data]);
+    });
+
     socket.on("initData", ({ cords, flights }) => {
       setCords(cords);
       setFlights(flights);
-      toast.success("All data loaded successfully");
+      toast.success("All data fetched successfully");
     });
 
     socket.on("weatherUpdate", (updatedCords) => {
@@ -92,7 +97,7 @@ export const SocketProvider = ({ children }) => {
         selectedFlight,
         setSelectedFlight,
         flightLogs,
-        highlightRoute,
+        setFlightLogs,
         setHighlightRoute,
       }}
     >

@@ -128,6 +128,18 @@ button:active {
   background: #c82333;
 }
 
+.start-button, .stop-button {
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.start-button[disabled], .stop-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+
 .flight-logs {
   background: #fff;
   border-radius: 8px;

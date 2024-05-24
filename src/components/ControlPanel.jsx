@@ -5,10 +5,8 @@ import handleStopFlight from "../services/handleStopFlight";
 import "../assets/styles/ControlPanel.css";
 
 const ControlPanel = () => {
-  const { response, planeIds, flights, flightLogs , setSelectedFlight,selectedFlight} = useSocket();
-
+  const { response, planeIds, flights, flightLogs, setSelectedFlight, selectedFlight,setFlightLogs } = useSocket();
   const [flightName, setFlightName] = useState("");
-  // const [selectedFlight, setSelectedFlight] = useState(null);
   const [isFlightRunning, setIsFlightRunning] = useState(false);
   const logsEndRef = useRef(null);
   const intervalRef = useRef(null);
@@ -23,6 +21,8 @@ const ControlPanel = () => {
   const startFlightUpdates = (flightName) => {
     handleStartFlight(flightName);
     setIsFlightRunning(true);
+    const status =`Flight${flightName} taking off!`;
+    setFlightLogs((prevLogs) => [...prevLogs, status]);
     intervalRef.current = setInterval(() => {
       handleStartFlight(flightName);
     }, 2000);
@@ -31,7 +31,8 @@ const ControlPanel = () => {
   const stopFlightUpdates = (flightName) => {
     handleStopFlight(flightName);
     setIsFlightRunning(false);
-    console.log("Stopping flight updates for", flightName);
+    const status =`Flight${flightName} stopping...!`
+    setFlightLogs((prevLogs) => [...prevLogs, status]);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -45,7 +46,7 @@ const ControlPanel = () => {
   }, [flightLogs]);
 
   useEffect(() => {
-    setSelectedFlight(null);
+    setFlightLogs([]);
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -85,20 +86,16 @@ const ControlPanel = () => {
                   <strong>Flight Name:</strong> {selectedFlight.airPlaneName}
                 </p>
                 <p>
-                  <strong>Departure Airport:</strong>{" "}
-                  {selectedFlight.departureAirport}
+                  <strong>Departure Airport:</strong> {selectedFlight.departureAirport}
                 </p>
                 <p>
-                  <strong>Destination Airport:</strong>{" "}
-                  {selectedFlight.destinationAirport}
+                  <strong>Destination Airport:</strong> {selectedFlight.destinationAirport}
                 </p>
                 <p>
-                  <strong>Departure Time:</strong>{" "}
-                  {new Date(selectedFlight.departureTime).toLocaleString()}
+                  <strong>Departure Time:</strong> {new Date(selectedFlight.departureTime).toLocaleString()}
                 </p>
                 <p>
-                  <strong>Destination Time:</strong>{" "}
-                  {new Date(selectedFlight.destinationTime).toLocaleString()}
+                  <strong>Destination Time:</strong> {new Date(selectedFlight.destinationTime).toLocaleString()}
                 </p>
               </div>
               <div className="button-group">
@@ -107,15 +104,16 @@ const ControlPanel = () => {
                   className="start-button"
                   disabled={isFlightRunning || !flightName}
                 >
-                  Start Flight
+                  {isFlightRunning ? "Running" : "Run"}
                 </button>
-                <button
-                  onClick={() => stopFlightUpdates(flightName)}
-                  className="stop-button"
-                  disabled={!isFlightRunning}
-                >
-                  Stop Flight
-                </button>
+                {isFlightRunning && (
+                  <button
+                    onClick={() => stopFlightUpdates(flightName)}
+                    className="stop-button"
+                  >
+                    Stop
+                  </button>
+                )}
               </div>
             </>
           ) : (
@@ -126,7 +124,7 @@ const ControlPanel = () => {
         <div className="flight-logs">
           <h2>Flight Logs</h2>
           <ul>
-            {flightLogs.map((log, index) => (
+            {flightLogs && flightLogs.map((log, index) => (
               <li key={index} className="log-item">
                 {log}
               </li>
