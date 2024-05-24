@@ -6,7 +6,7 @@ export const fetchPlaneNames = async () => {
   try {
     const response = await axios.get(API_URL);
     if (response.data.isSuccess) {
-     console.log(response.data.response);
+    //  console.log(response.data.response);
       return response.data.response;
     }
     throw new Error('Failed to fetch plane names');

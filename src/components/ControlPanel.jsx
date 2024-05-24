@@ -10,12 +10,19 @@ const ControlPanel = () => {
   const [isFlightRunning, setIsFlightRunning] = useState(false);
   const logsEndRef = useRef(null);
   const intervalRef = useRef(null);
+  const [arrTime, setArrTime] = useState("");
+
 
   const handleInputChange = (e) => {
     const flightId = Number(e.target.value);
     setFlightName(flightId);
     const flight = flights.find((flight) => flight.flightId === flightId);
     setSelectedFlight(flight);
+    const departureTime = new Date(`1970-01-01T${flight.departureTime}Z`);
+    const arrivalTime = new Date(
+      departureTime.getTime() + flight.reserveCord.length * 4000
+    );
+    setArrTime(arrivalTime.toISOString().slice(11, 19));
   };
 
   const startFlightUpdates = (flightName) => {
@@ -29,14 +36,18 @@ const ControlPanel = () => {
   };
 
   const stopFlightUpdates = (flightName) => {
-    handleStopFlight(flightName);
+    // handleStopFlight(flightName);
+    const status1 =`Flight${flightName} stopping...!`
+    setFlightLogs((prevLogs) => [...prevLogs, status1]);
+
     setIsFlightRunning(false);
-    const status =`Flight${flightName} stopping...!`
-    setFlightLogs((prevLogs) => [...prevLogs, status]);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    const status2 =`Flight${flightName} stopped!`
+
+    setFlightLogs((prevLogs) => [...prevLogs, status2]);
   };
 
   useEffect(() => {
@@ -92,10 +103,10 @@ const ControlPanel = () => {
                   <strong>Destination Airport:</strong> {selectedFlight.destinationAirport}
                 </p>
                 <p>
-                  <strong>Departure Time:</strong> {new Date(selectedFlight.departureTime).toLocaleString()}
+                  <strong>Departure Time:</strong> {(selectedFlight.departureTime)}
                 </p>
                 <p>
-                  <strong>Destination Time:</strong> {new Date(selectedFlight.destinationTime).toLocaleString()}
+                  <strong>Destination Time:</strong> {arrTime}
                 </p>
               </div>
               <div className="button-group">

@@ -57,7 +57,7 @@ const AllFlights = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleRowClick = (flight) => {
-    console.log(flight.flightId, " -clicked");
+    // console.log(flight.flightId, " -clicked");
     setSelectedFlight(flight);
   };
 

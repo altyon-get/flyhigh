@@ -4,14 +4,16 @@ const Navbar = ({ setActiveComponent }) => {
   return (
     <div className="navbar">
       <button onClick={() => setActiveComponent("allFlight")}>
-        All Flights 
+        All Flights ✈️
       </button>
-
       <button onClick={() => setActiveComponent("controlPanel")}>
-        Control Panel
+        Control Panel 🎛️
       </button>
       <button onClick={() => setActiveComponent("flightSchedule")}>
-        Flight Schedule
+        Flight Schedule 🗓️
+      </button>
+      <button onClick={() => setActiveComponent("weatherForecast")}>
+        Adjust weather ⚙️
       </button>
     </div>
   );

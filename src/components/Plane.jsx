@@ -2,10 +2,11 @@
 import PropTypes from "prop-types";
 import io from "socket.io-client";
 
-const Plane = ({ plane, index, isSelected }) => {
-  const spacing = 40; // Adjust as needed for spacing
+const Plane = ({ plane, index, isSelected , spacing}) => {
+  // const spacing = 40; 
+  // Adjust as needed for spacing
   const { reserveCord } = plane;
-  console.log('index: ', index, isSelected)
+  // console.log('index: ', index, isSelected)
   const calculateAngle = (x1, y1, x2, y2) => {
     return Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
   };

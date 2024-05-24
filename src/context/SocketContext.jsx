@@ -35,10 +35,28 @@ export const SocketProvider = ({ children }) => {
       setFlightLogs((prevLogs) => [...prevLogs, data]);
     });
 
-    socket.on("initData", ({ cords, flights }) => {
+    socket.on("initData", ({ cords, flights, airport, airplane }) => {
+      // console.log("cord data", cords);
       setCords(cords);
       setFlights(flights);
+      
+      const planeIdsArray = flights.map((flight) => flight?.flightId);
+      setPlaneIds(planeIdsArray);
+
+      const names = airplane.map((plane) => plane?.airPlaneName);
+      setPlanes(names);
+
+      setAirports(airport);
+      
       toast.success("All data fetched successfully");
+    });
+
+    socket.on('globalData', ({cordAll,flightAll})=>{
+      console.log('global data fetched', cordAll,flightAll);
+      setCords(cordAll);
+      setFlights(flightAll);
+      const planeIdsArray = flightAll.map((flight) => flight?.flightId);
+      setPlaneIds(planeIdsArray); 
     });
 
     socket.on("weatherUpdate", (updatedCords) => {
@@ -51,12 +69,12 @@ export const SocketProvider = ({ children }) => {
       console.log("second socket data succesful");
     });
 
-    socket.on("getFlight", (data) => {
-      setFlights(data);
-      const planeIdsArray = data.map((flight) => flight?.flightId);
-      setPlaneIds(planeIdsArray);
-      console.log("third socket data succesful");
-    });
+    // socket.on("getFlight", (data) => {
+    //   setFlights(data);
+    //   const planeIdsArray = data.map((flight) => flight?.flightId);
+    //   setPlaneIds(planeIdsArray);
+    //   console.log("third socket data succesful");
+    // });
 
     socket.on("getAirPlane", (planeNames) => {
       const names = planeNames.map((plane) => plane?.airPlaneName);
@@ -69,9 +87,9 @@ export const SocketProvider = ({ children }) => {
       console.log("fifth socket data succesful");
     });
 
-    socket.on("flightCreated", (data) => {
-      setScheduledFlights((prev) => [...prev, data.planeId]);
-    });
+    // socket.on("flightCreated", (data) => {
+    //   setScheduledFlights((prev) => [...prev, data.planeId]);
+    // });
 
     return () => {
       socket.disconnect();
@@ -80,6 +98,11 @@ export const SocketProvider = ({ children }) => {
 
   const createFlight = (flightData) => {
     socket.emit("createFlight", flightData);
+  };
+
+  const changeWeather = (weatherData) => {
+    console.log(weatherData, "weather data");
+    socket.emit("changeWeather", weatherData);
   };
 
   return (
@@ -99,6 +122,8 @@ export const SocketProvider = ({ children }) => {
         flightLogs,
         setFlightLogs,
         setHighlightRoute,
+        setScheduledFlights,
+        changeWeather
       }}
     >
       {children}

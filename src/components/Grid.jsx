@@ -13,25 +13,29 @@ const Grid = () => {
   const remainingPlanes = totalPlanes - flights.length;
 
   const getColor = (cord) => {
+    if (cord.reserve) {
+      // console.log(cord.x,cord.y, ' - reserve');
+      return "red";
+    }
     switch (cord.weather) {
-      case "good":
-        return "green";
-      case "rainy":
-        return "blue";
-      case "stormy":
-        return "red";
+      // case "good":
+      //   return "green";
+      // case "rainy":
+      //   return "blue";
+      // case "stormy":
+      //   return "red";
       default:
         return "gray";
     }
   };
 
   const handleZoomIn = () => {
-    console.log('zoom in', zoomLevel);
+    // console.log('zoom in', zoomLevel);
     setZoomLevel((prevZoom) => Math.min(prevZoom + 0.2, 10));
   };
 
   const handleZoomOut = () => {
-    console.log('zoom out', zoomLevel);
+    // console.log('zoom out', zoomLevel);
     setZoomLevel((prevZoom) => Math.max(prevZoom - 0.2, 1));
   };
 
@@ -46,11 +50,11 @@ const Grid = () => {
           height={svgSize}
           className="grid-svg"
           viewBox={`0 0 ${svgSize} ${svgSize}`}
-
         >
           {Array.from({ length: gridSize }).map((_, y) =>
             Array.from({ length: gridSize }).map((_, x) => {
               const cord = cords.find((c) => c.x === x && c.y === y) || {};
+              const weather = cord.weather;
               const fillColor = getColor(cord);
               const airport = airports.find((o) => o.x === x && o.y === y);
 
@@ -74,6 +78,7 @@ const Grid = () => {
                   airportName={airport ? airport.airPortName : null}
                   showCoordinates={showCoordinates}
                   spacing={spacing}
+                  weather={weather}
                 />
               );
             })
@@ -87,6 +92,7 @@ const Grid = () => {
                   plane={plane}
                   index={index}
                   isSelected={isSelected}
+                  spacing={spacing}
                 />
               );
             })}

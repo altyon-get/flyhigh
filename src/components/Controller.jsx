@@ -5,9 +5,10 @@ import ControlPanel from "./ControlPanel";
 import ScheduleFlight from "./ScheduleFlight";
 import "../assets/styles/Controller.css";
 import AllFlights from "./AllFlights";
+import WeatherForm from "./WeatherForm";
 
 const Controller = () => {
-  const [activeComponent, setActiveComponent] = useState("controlPanel");
+  const [activeComponent, setActiveComponent] = useState("allFlight");
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -17,6 +18,8 @@ const Controller = () => {
         return <ControlPanel />;
       case "flightSchedule":
         return <ScheduleFlight />;
+      case "weatherForecast":
+        return <WeatherForm />;
     }
   };
 

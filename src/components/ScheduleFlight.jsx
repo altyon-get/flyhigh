@@ -4,7 +4,7 @@ import "../assets/styles/FlightSchedule.css";
 import socket from "../services/socket"; // Adjust the path if necessary
 
 const FlightSchedule = () => {
-  const [planeId, setPlaneId] = useState("");
+  const [planeName, setPlaneName] = useState("");
   const [startId, setStartId] = useState("");
   const [goalId, setGoalId] = useState("");
   const [depTime, setDepTime] = useState("");
@@ -29,27 +29,30 @@ const FlightSchedule = () => {
     }
 
     const flightData = {
-      airPlaneName: planeId,
+      airPlaneName: planeName,
       departureAirport: startId,
       destinationAirport: goalId,
       departureTime: depTime,
-      destinationTime: arrTime,
+      // destinationTime: depTime
     };
 
     setLoading(true);
+    setResponse(null);
     createFlight(flightData);
 
     socket.on("flightCreated", (data) => {
+      console.log('flightCreated', data);
       setScheduledFlights((prev) => [...prev, data.planeId]);
       setResponse(data);
       setLoading(false);
-
-      // Calculate the expected arrival time
-      const departureTime = new Date(depTime);
+      const departureTime = new Date(`1970-01-01T${depTime}Z`);
       const arrivalTime = new Date(
-        departureTime.getTime() + data.reserveCord.length * 4000 // 4000ms = 4 seconds
+        departureTime.getTime() + data.reserveCord.length * 4000
       );
-      setArrTime(arrivalTime.toISOString());
+      console.log('gap:', data.reserveCord.length * 4000);
+      console.log("Expected arrival time:", arrivalTime.toISOString().slice(11, 19));
+
+      setArrTime(arrivalTime.toISOString().slice(11, 19));
     });
   };
 
@@ -71,8 +74,8 @@ const FlightSchedule = () => {
         <div className="form-group">
           <label>Plane ID:</label>
           <select
-            value={planeId}
-            onChange={(e) => setPlaneId(e.target.value)}
+            value={planeName}
+            onChange={(e) => setPlaneName(e.target.value)}
             required
           >
             <option value="">Select Plane</option>
@@ -114,22 +117,14 @@ const FlightSchedule = () => {
           </select>
         </div>
         <div className="form-group">
-          <label>Departure Time:</label>
+          <label>Departure Time (HH:MM:SS):</label>
           <input
-            type="datetime-local"
+            type="text"
+            pattern="\d{2}:\d{2}:\d{2}"
             value={depTime}
             onChange={(e) => setDepTime(e.target.value)}
+            placeholder="HH:MM:SS"
             required
-          />
-        </div>
-        <div className="form-group">
-          <label>Expected arrival time:</label>
-          <input
-            type="datetime-local"
-            value={arrTime}
-            onChange={(e) => setArrTime(e.target.value)}
-            required
-            readOnly
           />
         </div>
         <button type="submit" disabled={loading}>
@@ -139,9 +134,8 @@ const FlightSchedule = () => {
       {response && (
         <div className="response">
           <h3>Flight Scheduled Successfully</h3>
-          <p>Flight Name: {response.airPlaneName}</p>
-          <p>Expected Arrival Time: {new Date(arrTime).toLocaleString()}</p>
-          <pre>{JSON.stringify(response, null, 2)}</pre>
+          <p>Flight Name: {planeName}</p>
+          <p>Expected Arrival Time: {arrTime}</p>
         </div>
       )}
     </div>
