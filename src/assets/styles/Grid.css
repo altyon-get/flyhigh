@@ -42,7 +42,7 @@
 }
 
 .grid-svg line {
-  stroke: #ccc;
+  /* stroke: #ccc; */
 }
 
 /* .grid-svg rect {

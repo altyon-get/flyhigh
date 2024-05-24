@@ -19,7 +19,8 @@ export const SocketProvider = ({ children }) => {
     start: null,
     goal: null,
   });
-  const [selectedPlane, setSelectedPlane] = useState(null);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+  const [highlightRoute, setHighlightRoute] = useState([]);
 
   useEffect(() => {
     socket.connect();
@@ -88,9 +89,11 @@ export const SocketProvider = ({ children }) => {
         planeIds,
         selectedAirports,
         setSelectedAirports,
-        selectedPlane,
-        setSelectedPlane,
-        flightLogs
+        selectedFlight,
+        setSelectedFlight,
+        flightLogs,
+        highlightRoute,
+        setHighlightRoute,
       }}
     >
       {children}

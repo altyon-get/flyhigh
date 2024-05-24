@@ -19,7 +19,7 @@ const GridCell = ({
           y1={y * spacing + 10}
           x2={(x + 1) * spacing + 10}
           y2={y * spacing + 10}
-          stroke="grey"
+          stroke="#ccc"
         />
       )}
       {y < 19 && (
@@ -28,7 +28,7 @@ const GridCell = ({
           y1={y * spacing + 10}
           x2={x * spacing + 10}
           y2={(y + 1) * spacing + 10}
-          stroke="grey"
+          stroke="#ccc"
         />
       )}
       {isAirport && (

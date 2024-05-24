@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useSocket } from '../context/SocketContext';
-import '../assets/styles/AllFlights.css';
+import React, { useState, useEffect } from "react";
+import { useSocket } from "../context/SocketContext";
+import "../assets/styles/AllFlights.css";
 
 const AllFlights = () => {
-  const { flights } = useSocket();
+  const { flights, setSelectedFlight, selectedFlight } = useSocket();
   const [filteredFlights, setFilteredFlights] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchType, setSearchType] = useState('plane');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("plane");
   const [currentPage, setCurrentPage] = useState(1);
   const flightsPerPage = 10;
 
@@ -31,12 +31,16 @@ const AllFlights = () => {
     }
 
     const filtered = flights.filter((flight) => {
-      if (searchType === 'plane') {
+      if (searchType === "plane") {
         return flight.airPlaneName.toLowerCase().includes(term.toLowerCase());
-      } else if (searchType === 'source') {
-        return flight.departureAirport.toLowerCase().includes(term.toLowerCase());
-      } else if (searchType === 'destination') {
-        return flight.destinationAirport.toLowerCase().includes(term.toLowerCase());
+      } else if (searchType === "source") {
+        return flight.departureAirport
+          .toLowerCase()
+          .includes(term.toLowerCase());
+      } else if (searchType === "destination") {
+        return flight.destinationAirport
+          .toLowerCase()
+          .includes(term.toLowerCase());
       }
       return false;
     });
@@ -45,12 +49,16 @@ const AllFlights = () => {
 
   const indexOfLastFlight = currentPage * flightsPerPage;
   const indexOfFirstFlight = indexOfLastFlight - flightsPerPage;
-  const currentFlights = filteredFlights.slice(indexOfFirstFlight, indexOfLastFlight);
+  const currentFlights = filteredFlights.slice(
+    indexOfFirstFlight,
+    indexOfLastFlight
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleRowClick = (flight) => {
-    console.log(flight);
+    console.log(flight.flightId, " -clicked");
+    setSelectedFlight(flight);
   };
 
   return (
@@ -81,7 +89,11 @@ const AllFlights = () => {
         <tbody>
           {currentFlights.length > 0 ? (
             currentFlights.map((flight, index) => (
-              <tr key={flight._id} onClick={() => handleRowClick(flight)}>
+              <tr
+                key={flight._id}
+                onClick={() => handleRowClick(flight)}
+                className={selectedFlight?._id === flight._id ? 'selectedRow' : ''}
+              >
                 <td>{index + 1}</td>
                 <td>{flight.airPlaneName}</td>
                 <td>{flight.departureAirport}</td>
@@ -96,11 +108,14 @@ const AllFlights = () => {
         </tbody>
       </table>
       <div className="pagination">
-        {Array.from({ length: Math.ceil(filteredFlights.length / flightsPerPage) }, (_, i) => (
-          <button key={i} onClick={() => paginate(i + 1)}>
-            {i + 1}
-          </button>
-        ))}
+        {Array.from(
+          { length: Math.ceil(filteredFlights.length / flightsPerPage) },
+          (_, i) => (
+            <button key={i} onClick={() => paginate(i + 1)}>
+              {i + 1}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

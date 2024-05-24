@@ -7,7 +7,8 @@ import "../assets/styles/Grid.css";
 import { useSocket } from "../context/SocketContext";
 
 const Grid = () => {
-  const { cords, flights, airports, selectedAirports } = useSocket();
+  const { cords, flights, airports, selectedAirports, selectedFlight } =
+    useSocket();
   const totalPlanes = 10;
   const remainingPlanes = totalPlanes - flights.length;
 
@@ -26,6 +27,8 @@ const Grid = () => {
   };
 
   const planeColors = ["red", "blue", "green", "orange", "purple"];
+
+  console.log(selectedFlight, "selectedFlight");
 
   const renderGrid = () => {
     const gridSize = 20;
@@ -64,9 +67,18 @@ const Grid = () => {
               })
             )}
             {flights &&
-              flights.map((plane, index) => (
-                <Plane key={plane._id} plane={plane} index={index} />
-              ))}
+              flights.map((plane, index) => {
+                console.log(plane, selectedFlight, "planeXX")
+                const isSelected = plane._id === selectedFlight?._id;
+                return (
+                  <Plane
+                    key={plane._id}
+                    plane={plane}
+                    index={index}
+                    isSelected={isSelected}
+                  />
+                );
+              })}
           </svg>
         </div>
       </>

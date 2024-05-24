@@ -32,8 +32,13 @@
   background-color: #f2f2f2;
 }
 
-.flight-table tr:hover {
-  background-color: #f1f1f1;
+.flight-table tr:hover{
+  background-color: #e6e6e6;
+  cursor: pointer;
+}
+
+.selectedRow {
+  background-color: #cccccc !important;
   cursor: pointer;
 }
 
